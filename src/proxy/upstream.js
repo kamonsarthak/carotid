@@ -1,6 +1,7 @@
 import net from 'node:net';
 
 const CANDIDATES = ['127.0.0.1', '::1'];
+const PROBE_TIMEOUT_MS = 300;
 
 /**
  * Works out where "localhost:<port>" really is. Dev servers that listen on "localhost"
@@ -18,16 +19,24 @@ export function createUpstream(port) {
         socket.destroy();
         resolve(ok);
       };
-      socket.setTimeout(1000, () => done(false));
+      // Loopback connects succeed in well under a millisecond, but a refused one can take
+      // a second or two to report on Windows, so do not wait around for the bad news.
+      socket.setTimeout(PROBE_TIMEOUT_MS, () => done(false));
       socket.once('connect', () => done(true));
       socket.once('error', () => done(false));
     });
 
-  async function probe() {
-    for (const candidate of CANDIDATES) {
-      if (await canConnect(candidate)) return candidate;
-    }
-    return null;
+  // Probe both addresses at once; the first to accept wins.
+  function probe() {
+    return new Promise((resolve) => {
+      let pending = CANDIDATES.length;
+      for (const candidate of CANDIDATES) {
+        canConnect(candidate).then((ok) => {
+          if (ok) resolve(candidate);
+          else if (--pending === 0) resolve(null);
+        });
+      }
+    });
   }
 
   return {
