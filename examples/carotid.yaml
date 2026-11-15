@@ -1,0 +1,49 @@
+# carotid.yaml
+#
+# Copy this file next to your project (the folder you run `carotid` from).
+# carotid picks it up automatically and reloads it every time you save.
+#
+# How it fits together:
+#   1. `profile` sets the baseline for every request.
+#   2. Each rule that matches a request overrides the fields it sets.
+#      Rules are applied top to bottom, so later rules win.
+
+# One of: 3g, slow-3g, flaky-wifi, airplane-mode, offline. Remove for no baseline.
+profile: 3g
+
+rules:
+  # A slow endpoint: fixed delay plus random jitter (both in ms).
+  - path: /api/search
+    delay: 1200
+    jitter: 400
+
+  # A flaky write path: 1 in 4 POST/PUT requests under /api gets a 503.
+  - path: /api/**
+    method: [POST, PUT]
+    fail: 25            # percent of requests
+    status: 503         # or a list, e.g. [500, 502, 503]
+
+  # Big downloads on a thin pipe, and sometimes the connection dies halfway.
+  - path: /downloads/**
+    throttle: 30        # KB/s
+    cut: 10             # percent of responses cut mid-body
+
+  # Requests that never get an answer: the socket is simply closed.
+  - path: /api/analytics
+    drop: 50            # percent
+
+  # Opt something out of the profile entirely.
+  - path: /health
+    delay: 0
+    jitter: 0
+    fail: 0
+    throttle: 100000
+
+# Path patterns (matched against the path, without the query string):
+#   /api/users     exactly that path
+#   /api/*         one segment:  /api/users, but not /api/users/1
+#   /api/**        everything under /api, and /api itself
+#   **/*.png       any .png at any depth
+#
+# `method` is optional: one method or a list. Without it the rule matches all methods.
+# A rule without `path` matches every request.
