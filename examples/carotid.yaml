@@ -37,7 +37,7 @@ rules:
     delay: 0
     jitter: 0
     fail: 0
-    throttle: 100000
+    throttle: 0         # 0 = unlimited
 
 # Path patterns (matched against the path, without the query string):
 #   /api/users     exactly that path

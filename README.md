@@ -24,7 +24,7 @@ npx carotid 3000
   Requests appear below. Press Ctrl+C to stop.
 
 14:02:11 GET     /                          200    412ms  delay 371ms, throttle 200KB/s
-14:02:11 GET     /assets/index.js           200    1.9s   delay 284ms, throttle 200KB/s
+14:02:11 GET     /assets/index.js           200   1904ms  delay 284ms, throttle 200KB/s
 14:02:12 WS      /?token=abc                101    303ms  delay 301ms
 14:02:14 POST    /api/cart                  503    344ms  delay 339ms, fail 503
 14:02:14 GET     /favicon.ico               200      3ms  favicon fallback
@@ -130,6 +130,7 @@ rules:
     delay: 0
     jitter: 0
     fail: 0
+    throttle: 0         # 0 = unlimited
 ```
 
 | Field | Meaning |
@@ -140,7 +141,7 @@ rules:
 | `jitter` | Random ± ms on top of `delay` |
 | `fail` | Percent of requests answered with an injected status instead of reaching your app |
 | `status` | Status code for injected failures, or a list to pick from. Default 503 |
-| `throttle` | Response bandwidth in KB/s |
+| `throttle` | Response bandwidth in KB/s. `0` means unlimited |
 | `drop` | Percent of requests whose connection is closed without any response |
 | `cut` | Percent of responses cut off partway through the body |
 
@@ -204,7 +205,7 @@ carotid is honest about what it is: an HTTP-level simulator.
 - **WebSockets:** `delay`, `drop` and `fail` apply to the handshake. Messages on an open socket are not delayed, throttled or cut.
 - **Bodies are not captured.** The request log and exports contain headers, sizes and timings, not content.
 - **HTTP only.** No HTTPS, so browser features that need a secure context (service workers, camera, geolocation, clipboard) will not work on the phone over the LAN URL.
-- **The favicon fallback is an SVG.** Current Chrome, Firefox, Edge and Safari render it; very old browsers may not.
+- **The favicon fallback is an SVG.** Chrome, Firefox and Edge render it; Safari support for SVG favicons is patchy, so you may still see a blank icon there.
 - **It opens your dev server to your local network.** That is the point, but anyone on the same network can reach it, and `/__carotid/stats` too, while carotid runs. Use it on networks you trust.
 - Stats and latency percentiles cover the last 1000 requests and are lost when carotid stops.
 

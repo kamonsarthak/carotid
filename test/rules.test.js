@@ -56,7 +56,7 @@ test('rules override the profile, later rules win, untouched fields are kept', (
     profile: profiles['3g'],
     rules: [
       { path: '/api/**', delay: 1000 },
-      { path: '/api/health', delay: 0, jitter: 0, fail: 0, throttle: 5 },
+      { path: '/api/health', delay: 0, jitter: 0, fail: 0, throttle: 0 },
     ],
   });
   const base = resolveEffects(ruleset, 'GET', '/');
@@ -70,7 +70,7 @@ test('rules override the profile, later rules win, untouched fields are kept', (
   const health = resolveEffects(ruleset, 'GET', '/api/health');
   assert.equal(health.delay, 0);
   assert.equal(health.fail, 0);
-  assert.equal(health.throttle, 5);
+  assert.equal(health.throttle, 0, 'throttle: 0 lifts the profile limit');
 });
 
 test('jitter stays within +/- range and never goes negative', () => {
@@ -147,7 +147,7 @@ test('validateConfig reports every problem with its location', () => {
         { path: '/a', delay: 'fast' },
         { path: '/b', methods: ['GET'], fail: 150 },
         { path: '/c' },
-        { method: 'FETCH', status: 42, throttle: 0 },
+        { method: 'FETCH', status: 42, throttle: -5 },
         'nope',
       ],
     },
@@ -163,7 +163,7 @@ test('validateConfig reports every problem with its location', () => {
   assert.match(text, /rules\[2\] does nothing/);
   assert.match(text, /rules\[3\]\.method must be one or more of/);
   assert.match(text, /rules\[3\]\.status must be an HTTP status code/);
-  assert.match(text, /rules\[3\]\.throttle must be a positive number/);
+  assert.match(text, /rules\[3\]\.throttle must be a number of KB/);
   assert.match(text, /rules\[4\] must be a mapping/);
 });
 

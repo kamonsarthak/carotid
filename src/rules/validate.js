@@ -88,8 +88,8 @@ function validateRule(raw, where, errors) {
   }
 
   if (raw.throttle !== undefined) {
-    if (typeof raw.throttle === 'number' && raw.throttle > 0) rule.throttle = raw.throttle;
-    else err('throttle', 'must be a positive number of KB/s');
+    if (typeof raw.throttle === 'number' && raw.throttle >= 0) rule.throttle = raw.throttle;
+    else err('throttle', 'must be a number of KB/s (0 means unlimited)');
   }
 
   if (!EFFECT_KEYS.some((key) => raw[key] !== undefined)) {
