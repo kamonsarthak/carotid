@@ -1,0 +1,14 @@
+node_modules/
+npm-debug.log*
+.DS_Store
+Thumbs.db
+*.tgz
+coverage/
+
+# carotid export output
+carotid-export-*.har
+carotid-export-*.json
+
+# local config used while hacking on carotid itself
+/carotid.yaml
+/carotid.yml

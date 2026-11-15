@@ -1,0 +1,40 @@
+{
+  "name": "carotid",
+  "version": "0.1.0",
+  "description": "Zero-config dev proxy that makes localhost behave like the real world: LAN URL + QR code, latency, failures, throttling, live request log.",
+  "type": "module",
+  "bin": {
+    "carotid": "bin/carotid.js"
+  },
+  "files": [
+    "bin",
+    "src",
+    "examples",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "start": "node bin/carotid.js",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=18.3"
+  },
+  "keywords": [
+    "proxy",
+    "dev",
+    "localhost",
+    "chaos",
+    "latency",
+    "throttle",
+    "network",
+    "qr",
+    "lan",
+    "mobile"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "qrcode-terminal": "^0.12.0",
+    "yaml": "^2.4.0"
+  }
+}
