@@ -1,0 +1,13 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "carotid"
+type: software
+authors:
+  - family-names: "Kamon"
+    given-names: "Sarthak"
+    alias: "kamonsarthak"
+    orcid: "https://orcid.org/0009-0008-2256-7389"
+    website: "https://kamonsarthak.com"
+repository-code: "https://github.com/kamonsarthak/carotid"
+url: "https://www.npmjs.com/package/carotid"
+license: MIT
