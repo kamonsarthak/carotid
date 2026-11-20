@@ -1,6 +1,6 @@
 {
   "name": "carotid",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Zero-config dev proxy that makes localhost behave like the real world: LAN URL + QR code, latency, failures, throttling, live request log.",
   "type": "module",
   "bin": {
